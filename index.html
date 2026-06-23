@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strangers In Paradise - Ultra Edition</title>
+    <title>Strangers In Paradise - Ultimate Edition</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Indie+Flower&display=swap" rel="stylesheet">
     
     <style>
@@ -15,6 +15,7 @@
             font-family: 'Indie Flower', cursive;
             overflow-x: hidden;
             color: white;
+            perspective: 1000px; /* Diperlukan untuk efek kedalaman 3D */
         }
 
         .container {
@@ -44,6 +45,7 @@
             opacity: 0;
             animation: fadeIn 1s ease-in-out 1.5s forwards;
             box-shadow: inset 0 20px 50px rgba(0,0,0,0.5);
+            transition: transform 0.1s ease-out; /* Untuk efek parallax latar */
         }
 
         h1.title {
@@ -60,22 +62,24 @@
         .polaroid {
             background: #fdfdfd;
             padding: 10px 10px 30px 10px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
             display: inline-block;
             position: relative;
             opacity: 0; 
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            /* Transisi untuk memperhalus pergerakan parallax */
+            transition: opacity 0.3s, box-shadow 0.3s, transform 0.2s ease-out;
             cursor: pointer;
+            will-change: transform;
         }
 
-        /* Efek Interaksi Hover */
+        /* Efek Hover (Skala membesar di atas parallax) */
         .polaroid:hover {
-            transform: scale(1.15) rotate(0deg) !important;
+            transform: scale(1.15) rotate(0deg) translate(0, 0) !important;
             z-index: 50;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.7);
         }
 
-        /* FITUR BARU: Penjepit Kayu Klasik (Clothespin) */
+        /* Penjepit Kayu Klasik */
         .clothespin {
             position: absolute;
             top: -22px;
@@ -83,12 +87,11 @@
             transform: translateX(-50%);
             width: 12px;
             height: 32px;
-            background: #cc9966; /* Warna kayu jepitan */
+            background: #cc9966; 
             border-radius: 2px;
             box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
             z-index: 10;
         }
-        /* Kawat Besi di tengah penjepit */
         .clothespin::after {
             content: '';
             position: absolute;
@@ -99,7 +102,6 @@
             background: #666;
         }
 
-        /* Tali Gantungan Tipis di atas penjepit */
         .string-line {
             position: absolute;
             top: -40px;
@@ -133,15 +135,10 @@
             width: 250px;
             margin: 40px auto;
             animation: dropDownRotate 1s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards;
-            transform: rotate(-3deg);
             z-index: 5;
         }
+        .main-photo .caption { font-size: 1.5rem; }
 
-        .main-photo .caption {
-            font-size: 1.5rem;
-        }
-
-        /* Baris Menu Utama */
         .menu-row {
             display: flex;
             justify-content: center;
@@ -150,7 +147,6 @@
             position: relative;
         }
 
-        /* Kawat horizontal tempat bertumpunya jepitan baju */
         .hanging-wire {
             position: absolute;
             top: -5px;
@@ -168,13 +164,8 @@
             padding: 5px 5px 25px 5px;
             z-index: 2;
         }
+        .menu-row .polaroid .caption { font-size: 0.9rem; bottom: 2px; }
 
-        .menu-row .polaroid .caption {
-            font-size: 0.9rem;
-            bottom: 2px;
-        }
-
-        /* Baris Galeri Bawah */
         .gallery-row {
             display: flex;
             justify-content: center;
@@ -190,7 +181,6 @@
             padding: 5px 5px 20px 5px;
         }
 
-        /* === TIMELINE TEXT DI PAPAN === */
         .timeline-text {
             position: absolute;
             top: 485px;
@@ -213,19 +203,12 @@
         }
 
         @keyframes dropDownRotate {
-            0% { 
-                opacity: 0; 
-                transform: translateY(-250px) rotate(-15deg); 
-            }
-            70% {
-                transform: translateY(10px) rotate(3deg); /* Efek memantul tali saat jatuh */
-            }
-            100% { 
-                opacity: 1; 
-            }
+            0% { opacity: 0; transform: translateY(-250px) rotate(-15deg); }
+            70% { transform: translateY(10px) rotate(3deg); }
+            100% { opacity: 1; }
         }
 
-        /* Pengaturan Waktu Rentetan Jatuh (Menu) */
+        /* Waktu Jatuh (Menu) */
         .menu-row .polaroid:nth-child(2) { animation: dropDownRotate 0.6s ease-out 3.0s forwards; }
         .menu-row .polaroid:nth-child(3) { animation: dropDownRotate 0.6s ease-out 3.2s forwards; }
         .menu-row .polaroid:nth-child(4) { animation: dropDownRotate 0.6s ease-out 3.4s forwards; }
@@ -233,7 +216,7 @@
         .menu-row .polaroid:nth-child(6) { animation: dropDownRotate 0.6s ease-out 3.8s forwards; }
         .menu-row .polaroid:nth-child(7) { animation: dropDownRotate 0.6s ease-out 4.0s forwards; }
 
-        /* Pengaturan Waktu Rentetan Jatuh (Galeri Bawah) */
+        /* Waktu Jatuh (Galeri Bawah) */
         .gallery-row .polaroid:nth-child(1) { animation: dropDownRotate 0.5s ease-out 4.5s forwards; }
         .gallery-row .polaroid:nth-child(2) { animation: dropDownRotate 0.5s ease-out 4.6s forwards; }
         .gallery-row .polaroid:nth-child(3) { animation: dropDownRotate 0.5s ease-out 4.7s forwards; }
@@ -242,7 +225,7 @@
         .gallery-row .polaroid:nth-child(6) { animation: dropDownRotate 0.5s ease-out 5.0s forwards; }
         .gallery-row .polaroid:nth-child(7) { animation: dropDownRotate 0.5s ease-out 5.1s forwards; }
 
-        /* === FITUR BARU: UI LIGHTBOX POPUP === */
+        /* === UI LIGHTBOX POPUP === */
         .lightbox {
             display: none;
             position: fixed;
@@ -257,10 +240,8 @@
             opacity: 0;
             transition: opacity 0.3s ease;
         }
-        .lightbox.active {
-            display: flex;
-            opacity: 1;
-        }
+        .lightbox.active { display: flex; opacity: 1; }
+        
         .lightbox-content {
             background: #fdfdfd;
             padding: 15px 15px 50px 15px;
@@ -271,9 +252,8 @@
             max-height: 85%;
             text-align: center;
         }
-        .lightbox.active .lightbox-content {
-            transform: scale(1) rotate(0deg); /* Animasi membesar mendatar stabil */
-        }
+        .lightbox.active .lightbox-content { transform: scale(1) rotate(0deg); }
+        
         .lightbox-content img {
             max-width: 100%;
             max-height: 65vh;
@@ -300,7 +280,7 @@
 <body>
 
     <div class="container">
-        <div class="yellow-board"></div>
+        <div class="yellow-board" id="board"></div>
 
         <h1 class="title">Strangers In Paradise</h1>
 
@@ -308,56 +288,30 @@
             <span>'03</span><span>'04</span><span>'05</span><span>'06</span><span>'07</span>
         </div>
 
-        <div class="main-photo polaroid" style="transform: rotate(2deg);">
-            <div class="clothespin"></div>
-            <div class="string-line"></div>
+        <div class="main-photo polaroid" data-rot="2" style="transform: rotate(2deg);">
+            <div class="clothespin"></div><div class="string-line"></div>
             <img src="https://picsum.photos/400/300?random=1" alt="Peek of The Week">
             <div class="caption">Peek of The Week</div>
         </div>
 
         <div class="menu-row">
             <div class="hanging-wire"></div>
-            
-            <div class="polaroid" style="transform: rotate(-4deg);">
-                <div class="clothespin"></div>
-                <img src="https://picsum.photos/200/200?random=2" alt="Projects">
-                <div class="caption">Projects</div>
-            </div>
-            <div class="polaroid" style="transform: rotate(3deg);">
-                <div class="clothespin"></div>
-                <img src="https://picsum.photos/200/200?random=3" alt="Teachers">
-                <div class="caption">Teachers</div>
-            </div>
-            <div class="polaroid" style="transform: rotate(-1deg);">
-                <div class="clothespin"></div>
-                <img src="https://picsum.photos/200/200?random=4" alt="Students">
-                <div class="caption">Students</div>
-            </div>
-            <div class="polaroid" style="transform: rotate(5deg);">
-                <div class="clothespin"></div>
-                <img src="https://picsum.photos/200/200?random=5" alt="New Photos">
-                <div class="caption">New Photos</div>
-            </div>
-            <div class="polaroid" style="transform: rotate(-2deg);">
-                <div class="clothespin"></div>
-                <img src="https://picsum.photos/200/200?random=6" alt="Blog">
-                <div class="caption">Blog</div>
-            </div>
-            <div class="polaroid" style="transform: rotate(2deg);">
-                <div class="clothespin"></div>
-                <img src="https://picsum.photos/200/200?random=7" alt="Contact">
-                <div class="caption">Contact</div>
-            </div>
+            <div class="polaroid" data-rot="-4" style="transform: rotate(-4deg);"><div class="clothespin"></div><img src="https://picsum.photos/200/200?random=2" alt="Projects"><div class="caption">Projects</div></div>
+            <div class="polaroid" data-rot="3" style="transform: rotate(3deg);"><div class="clothespin"></div><img src="https://picsum.photos/200/200?random=3" alt="Teachers"><div class="caption">Teachers</div></div>
+            <div class="polaroid" data-rot="-1" style="transform: rotate(-1deg);"><div class="clothespin"></div><img src="https://picsum.photos/200/200?random=4" alt="Students"><div class="caption">Students</div></div>
+            <div class="polaroid" data-rot="5" style="transform: rotate(5deg);"><div class="clothespin"></div><img src="https://picsum.photos/200/200?random=5" alt="New Photos"><div class="caption">New Photos</div></div>
+            <div class="polaroid" data-rot="-2" style="transform: rotate(-2deg);"><div class="clothespin"></div><img src="https://picsum.photos/200/200?random=6" alt="Blog"><div class="caption">Blog</div></div>
+            <div class="polaroid" data-rot="2" style="transform: rotate(2deg);"><div class="clothespin"></div><img src="https://picsum.photos/200/200?random=7" alt="Contact"><div class="caption">Contact</div></div>
         </div>
 
         <div class="gallery-row">
-            <div class="polaroid" style="transform: rotate(3deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=8" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(-3deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=9" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(1deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=10" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(-5deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=11" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(2deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=12" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(-2deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=13" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(4deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=14" alt="Gallery"></div>
+            <div class="polaroid" data-rot="3" style="transform: rotate(3deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=8" alt="Gallery"></div>
+            <div class="polaroid" data-rot="-3" style="transform: rotate(-3deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=9" alt="Gallery"></div>
+            <div class="polaroid" data-rot="1" style="transform: rotate(1deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=10" alt="Gallery"></div>
+            <div class="polaroid" data-rot="-5" style="transform: rotate(-5deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=11" alt="Gallery"></div>
+            <div class="polaroid" data-rot="2" style="transform: rotate(2deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=12" alt="Gallery"></div>
+            <div class="polaroid" data-rot="-2" style="transform: rotate(-2deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=13" alt="Gallery"></div>
+            <div class="polaroid" data-rot="4" style="transform: rotate(4deg);"><div class="clothespin"></div><div class="string-line"></div><img src="https://picsum.photos/180/180?random=14" alt="Gallery"></div>
         </div>
     </div>
 
@@ -371,18 +325,48 @@
 
     <script>
         const polaroids = document.querySelectorAll('.polaroid');
+        const board = document.getElementById('board');
         const lightbox = document.getElementById('lightboxModal');
         const lightboxImg = document.getElementById('lightboxImg');
         const lightboxCaption = document.getElementById('lightboxCaption');
+        
+        // Memuat efek suara jepretan kamera (berasal dari pustaka suara gratis Google)
+        const shutterSound = new Audio('https://actions.google.com/sounds/v1/foley/camera_shutter.ogg');
+        shutterSound.volume = 0.5; // Mengatur volume agar tidak terlalu berisik
 
-        // Membuka Lightbox saat polaroid diklik
+        // 1. EFEK PARALLAX 3D PADA MOUSEMOVE
+        // Efek ini baru aktif setelah animasi pembuka (5 detik) selesai agar tidak tumpang tindih
+        setTimeout(() => {
+            document.addEventListener('mousemove', (e) => {
+                // Menghitung titik tengah layar
+                const xAxis = (window.innerWidth / 2 - e.pageX) / 80;
+                const yAxis = (window.innerHeight / 2 - e.pageY) / 80;
+
+                // Menggerakkan papan kuning secara halus
+                board.style.transform = `translate(${xAxis * 0.5}px, ${yAxis * 0.5}px)`;
+
+                // Menggerakkan setiap polaroid dengan kecepatan berbeda-beda (menambah ilusi jarak)
+                polaroids.forEach((photo, index) => {
+                    const speed = (index % 3) + 1.5; 
+                    const rotOriginal = photo.getAttribute('data-rot') || 0;
+                    
+                    // Kita gabungkan rotasi asli dengan perpindahan posisi mouse
+                    photo.style.transform = `rotate(${rotOriginal}deg) translate(${xAxis * speed}px, ${yAxis * speed}px)`;
+                });
+            });
+        }, 5500); 
+
+        // 2. FUNGSI LIGHTBOX + EFEK SUARA
         polaroids.forEach(photo => {
             photo.addEventListener('click', () => {
                 const imgElement = photo.querySelector('img');
                 if (!imgElement) return;
 
+                // Mainkan suara kamera (cekrek!)
+                shutterSound.currentTime = 0;
+                shutterSound.play().catch(e => console.log("Browser memblokir autoplay audio sebelum interaksi."));
+
                 const src = imgElement.getAttribute('src');
-                // Mengambil teks caption, jika tidak ada (seperti galeri bawah) beri teks default
                 const caption = photo.querySelector('.caption') ? photo.querySelector('.caption').innerText : "Memories & Gallery";
 
                 lightboxImg.setAttribute('src', src);
@@ -391,7 +375,7 @@
             });
         });
 
-        // Menutup Lightbox saat mengklik area hitam atau tombol silang
+        // Menutup Lightbox
         lightbox.addEventListener('click', (e) => {
             if (e.target.id === 'lightboxModal' || e.target.classList.contains('close-btn')) {
                 lightbox.classList.remove('active');
