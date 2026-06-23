@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Strangers In Paradise - Ultimate Edition</title>
+    <title>Strangers In Paradise - Cinematic Masterpiece</title>
     <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Indie+Flower&display=swap" rel="stylesheet">
     
     <style>
@@ -11,11 +11,12 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #1a1a1a; 
+            background-color: #111; /* Dibuat sedikit lebih gelap agar efek debu lebih terlihat */
             font-family: 'Indie Flower', cursive;
             overflow-x: hidden;
             color: white;
-            perspective: 1000px; /* Diperlukan untuk efek kedalaman 3D */
+            perspective: 1000px; 
+            cursor: default;
         }
 
         .container {
@@ -27,7 +28,6 @@
             text-align: center;
         }
 
-        /* Latar belakang papan kuning */
         .yellow-board {
             position: absolute;
             top: 120px;
@@ -36,16 +36,17 @@
             height: 850px;
             background-color: #dcb827;
             background-image: repeating-linear-gradient(
-                rgba(0,0,0,0.03) 0px,
-                rgba(0,0,0,0.03) 2px,
+                rgba(0,0,0,0.04) 0px,
+                rgba(0,0,0,0.04) 2px,
                 transparent 2px,
                 transparent 100px
             );
             z-index: -1;
             opacity: 0;
-            animation: fadeIn 1s ease-in-out 1.5s forwards;
-            box-shadow: inset 0 20px 50px rgba(0,0,0,0.5);
-            transition: transform 0.1s ease-out; /* Untuk efek parallax latar */
+            animation: fadeIn 1.5s ease-in-out 1.5s forwards;
+            box-shadow: inset 0 30px 80px rgba(0,0,0,0.6); /* Vignet gelap di pinggir papan */
+            transition: transform 0.1s ease-out; 
+            overflow: hidden;
         }
 
         h1.title {
@@ -55,7 +56,33 @@
             margin: 0;
             opacity: 0;
             animation: fadeIn 2s ease-in-out forwards; 
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        }
+
+        /* === FITUR BARU: PARTIKEL DEBU === */
+        #dust-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* Agar tidak menghalangi klik */
+            z-index: 100;
+        }
+
+        .dust-particle {
+            position: absolute;
+            background: rgba(255, 230, 150, 0.4);
+            border-radius: 50%;
+            box-shadow: 0 0 5px rgba(255, 230, 150, 0.3);
+            animation: float-dust linear infinite;
+        }
+
+        @keyframes float-dust {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-150px) translateX(100px); opacity: 0; }
         }
 
         /* === GAYA POLAROID === */
@@ -66,20 +93,32 @@
             display: inline-block;
             position: relative;
             opacity: 0; 
-            /* Transisi untuk memperhalus pergerakan parallax */
             transition: opacity 0.3s, box-shadow 0.3s, transform 0.2s ease-out;
             cursor: pointer;
             will-change: transform;
         }
 
-        /* Efek Hover (Skala membesar di atas parallax) */
+        /* FITUR BARU: Filter Sepia pada Gambar */
+        .polaroid img {
+            display: block;
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            filter: sepia(70%) contrast(1.1) brightness(0.9); /* Gambar terlihat tua/klasik */
+            transition: filter 0.5s ease-in-out;
+        }
+
+        /* Efek Hover (Skala membesar & Warna kembali cerah) */
         .polaroid:hover {
             transform: scale(1.15) rotate(0deg) translate(0, 0) !important;
             z-index: 50;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.7);
+            box-shadow: 0 25px 45px rgba(0,0,0,0.8);
+        }
+        
+        .polaroid:hover img {
+            filter: sepia(0%) contrast(1.05) brightness(1); /* Warna asli kembali */
         }
 
-        /* Penjepit Kayu Klasik */
         .clothespin {
             position: absolute;
             top: -22px;
@@ -87,9 +126,9 @@
             transform: translateX(-50%);
             width: 12px;
             height: 32px;
-            background: #cc9966; 
+            background: #b5804e; 
             border-radius: 2px;
-            box-shadow: 1px 2px 4px rgba(0,0,0,0.3);
+            box-shadow: 1px 2px 4px rgba(0,0,0,0.4);
             z-index: 10;
         }
         .clothespin::after {
@@ -99,7 +138,7 @@
             left: 0;
             width: 100%;
             height: 3px;
-            background: #666;
+            background: #444;
         }
 
         .string-line {
@@ -108,15 +147,8 @@
             left: 50%;
             width: 1px;
             height: 40px;
-            background: rgba(0, 0, 0, 0.25);
+            background: rgba(0, 0, 0, 0.3);
             z-index: -1;
-        }
-
-        .polaroid img {
-            display: block;
-            width: 100%;
-            height: auto;
-            border: 1px solid #ddd;
         }
 
         .polaroid .caption {
@@ -125,61 +157,23 @@
             left: 0;
             width: 100%;
             text-align: center;
-            color: #222;
+            color: #333;
             font-weight: bold;
             font-size: 1.2rem;
         }
 
         /* === ELEMEN SPESIFIK === */
-        .main-photo {
-            width: 250px;
-            margin: 40px auto;
-            animation: dropDownRotate 1s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards;
-            z-index: 5;
-        }
+        .main-photo { width: 250px; margin: 40px auto; animation: dropDownRotate 1s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards; z-index: 5; }
         .main-photo .caption { font-size: 1.5rem; }
 
-        .menu-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 50px;
-            position: relative;
-        }
-
-        .hanging-wire {
-            position: absolute;
-            top: -5px;
-            left: 10%;
-            width: 80%;
-            height: 2px;
-            background-color: rgba(0, 0, 0, 0.3);
-            z-index: 0;
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out 2.5s forwards;
-        }
-
-        .menu-row .polaroid {
-            width: 100px;
-            padding: 5px 5px 25px 5px;
-            z-index: 2;
-        }
+        .menu-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 50px; position: relative; }
+        .hanging-wire { position: absolute; top: -5px; left: 10%; width: 80%; height: 2px; background-color: rgba(0, 0, 0, 0.4); box-shadow: 0 1px 1px rgba(255,255,255,0.1); z-index: 0; opacity: 0; animation: fadeIn 1s ease-in-out 2.5s forwards; }
+        
+        .menu-row .polaroid { width: 100px; padding: 5px 5px 25px 5px; z-index: 2; }
         .menu-row .polaroid .caption { font-size: 0.9rem; bottom: 2px; }
 
-        .gallery-row {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 850px;
-            margin: 0 auto;
-            position: relative;
-        }
-
-        .gallery-row .polaroid {
-            width: 90px;
-            padding: 5px 5px 20px 5px;
-        }
+        .gallery-row { display: flex; justify-content: center; flex-wrap: wrap; gap: 20px; max-width: 850px; margin: 0 auto; position: relative; }
+        .gallery-row .polaroid { width: 90px; padding: 5px 5px 20px 5px; }
 
         .timeline-text {
             position: absolute;
@@ -188,7 +182,7 @@
             left: 10%;
             display: flex;
             justify-content: space-around;
-            color: rgba(0,0,0,0.4);
+            color: rgba(0,0,0,0.3);
             font-size: 1.5rem;
             font-weight: bold;
             z-index: 0;
@@ -196,19 +190,10 @@
             animation: fadeIn 1s ease-in-out 3s forwards;
         }
 
-        /* === ANIMASI UTAMA === */
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
+        /* === ANIMASI JATUH === */
+        @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+        @keyframes dropDownRotate { 0% { opacity: 0; transform: translateY(-250px) rotate(-15deg); } 70% { transform: translateY(10px) rotate(3deg); } 100% { opacity: 1; } }
 
-        @keyframes dropDownRotate {
-            0% { opacity: 0; transform: translateY(-250px) rotate(-15deg); }
-            70% { transform: translateY(10px) rotate(3deg); }
-            100% { opacity: 1; }
-        }
-
-        /* Waktu Jatuh (Menu) */
         .menu-row .polaroid:nth-child(2) { animation: dropDownRotate 0.6s ease-out 3.0s forwards; }
         .menu-row .polaroid:nth-child(3) { animation: dropDownRotate 0.6s ease-out 3.2s forwards; }
         .menu-row .polaroid:nth-child(4) { animation: dropDownRotate 0.6s ease-out 3.4s forwards; }
@@ -216,7 +201,6 @@
         .menu-row .polaroid:nth-child(6) { animation: dropDownRotate 0.6s ease-out 3.8s forwards; }
         .menu-row .polaroid:nth-child(7) { animation: dropDownRotate 0.6s ease-out 4.0s forwards; }
 
-        /* Waktu Jatuh (Galeri Bawah) */
         .gallery-row .polaroid:nth-child(1) { animation: dropDownRotate 0.5s ease-out 4.5s forwards; }
         .gallery-row .polaroid:nth-child(2) { animation: dropDownRotate 0.5s ease-out 4.6s forwards; }
         .gallery-row .polaroid:nth-child(3) { animation: dropDownRotate 0.5s ease-out 4.7s forwards; }
@@ -227,63 +211,31 @@
 
         /* === UI LIGHTBOX POPUP === */
         .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 1000; justify-content: center; align-items: center;
+            opacity: 0; transition: opacity 0.3s ease;
         }
         .lightbox.active { display: flex; opacity: 1; }
         
         .lightbox-content {
-            background: #fdfdfd;
-            padding: 15px 15px 50px 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            transform: scale(0.7) rotate(-5deg);
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            max-width: 90%;
-            max-height: 85%;
-            text-align: center;
+            background: #fdfdfd; padding: 15px 15px 50px 15px; box-shadow: 0 20px 50px rgba(0,0,0,1);
+            transform: scale(0.7) rotate(-5deg); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 90%; max-height: 85%; text-align: center;
         }
         .lightbox.active .lightbox-content { transform: scale(1) rotate(0deg); }
         
-        .lightbox-content img {
-            max-width: 100%;
-            max-height: 65vh;
-            display: block;
-            border: 1px solid #ccc;
-        }
-        .lightbox-caption {
-            color: #111;
-            font-size: 2rem;
-            margin-top: 15px;
-            font-family: 'Caveat', cursive;
-        }
-        .close-btn {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: #fff;
-            font-size: 3rem;
-            cursor: pointer;
-            user-select: none;
-        }
+        .lightbox-content img { max-width: 100%; max-height: 65vh; display: block; border: 1px solid #ccc; }
+        .lightbox-caption { color: #111; font-size: 2rem; margin-top: 15px; font-family: 'Caveat', cursive; }
+        .close-btn { position: absolute; top: 20px; right: 30px; color: #fff; font-size: 3rem; cursor: pointer; user-select: none; }
     </style>
 </head>
 <body>
 
+    <div id="dust-container"></div>
+
     <div class="container">
         <div class="yellow-board" id="board"></div>
-
         <h1 class="title">Strangers In Paradise</h1>
-
         <div class="timeline-text">
             <span>'03</span><span>'04</span><span>'05</span><span>'06</span><span>'07</span>
         </div>
@@ -324,47 +276,62 @@
     </div>
 
     <script>
+        // --- 1. GENERATOR PARTIKEL DEBU ---
+        const dustContainer = document.getElementById('dust-container');
+        const particleCount = 40; // Jumlah partikel debu
+
+        for (let i = 0; i < particleCount; i++) {
+            let dust = document.createElement('div');
+            dust.className = 'dust-particle';
+            
+            // Ukuran acak (sangat kecil hingga sedikit lebih besar)
+            let size = Math.random() * 3 + 1; 
+            dust.style.width = size + 'px';
+            dust.style.height = size + 'px';
+            
+            // Posisi awal acak menyebar di seluruh layar
+            dust.style.left = Math.random() * 100 + 'vw';
+            dust.style.top = Math.random() * 100 + 'vh';
+            
+            // Kecepatan melayang dan delay acak agar natural
+            dust.style.animationDuration = (Math.random() * 10 + 8) + 's';
+            dust.style.animationDelay = (Math.random() * 5) + 's';
+            
+            dustContainer.appendChild(dust);
+        }
+
+        // --- 2. INTERAKSI UI & AUDIO ---
         const polaroids = document.querySelectorAll('.polaroid');
         const board = document.getElementById('board');
         const lightbox = document.getElementById('lightboxModal');
         const lightboxImg = document.getElementById('lightboxImg');
         const lightboxCaption = document.getElementById('lightboxCaption');
-        
-        // Memuat efek suara jepretan kamera (berasal dari pustaka suara gratis Google)
         const shutterSound = new Audio('https://actions.google.com/sounds/v1/foley/camera_shutter.ogg');
-        shutterSound.volume = 0.5; // Mengatur volume agar tidak terlalu berisik
+        shutterSound.volume = 0.5;
 
-        // 1. EFEK PARALLAX 3D PADA MOUSEMOVE
-        // Efek ini baru aktif setelah animasi pembuka (5 detik) selesai agar tidak tumpang tindih
+        // Efek Parallax
         setTimeout(() => {
             document.addEventListener('mousemove', (e) => {
-                // Menghitung titik tengah layar
                 const xAxis = (window.innerWidth / 2 - e.pageX) / 80;
                 const yAxis = (window.innerHeight / 2 - e.pageY) / 80;
-
-                // Menggerakkan papan kuning secara halus
                 board.style.transform = `translate(${xAxis * 0.5}px, ${yAxis * 0.5}px)`;
 
-                // Menggerakkan setiap polaroid dengan kecepatan berbeda-beda (menambah ilusi jarak)
                 polaroids.forEach((photo, index) => {
                     const speed = (index % 3) + 1.5; 
                     const rotOriginal = photo.getAttribute('data-rot') || 0;
-                    
-                    // Kita gabungkan rotasi asli dengan perpindahan posisi mouse
                     photo.style.transform = `rotate(${rotOriginal}deg) translate(${xAxis * speed}px, ${yAxis * speed}px)`;
                 });
             });
         }, 5500); 
 
-        // 2. FUNGSI LIGHTBOX + EFEK SUARA
+        // Lightbox & Shutter Sound
         polaroids.forEach(photo => {
             photo.addEventListener('click', () => {
                 const imgElement = photo.querySelector('img');
                 if (!imgElement) return;
 
-                // Mainkan suara kamera (cekrek!)
                 shutterSound.currentTime = 0;
-                shutterSound.play().catch(e => console.log("Browser memblokir autoplay audio sebelum interaksi."));
+                shutterSound.play().catch(e => console.log("Audio diblokir oleh browser sampai user berinteraksi."));
 
                 const src = imgElement.getAttribute('src');
                 const caption = photo.querySelector('.caption') ? photo.querySelector('.caption').innerText : "Memories & Gallery";
@@ -375,7 +342,6 @@
             });
         });
 
-        // Menutup Lightbox
         lightbox.addEventListener('click', (e) => {
             if (e.target.id === 'lightboxModal' || e.target.classList.contains('close-btn')) {
                 lightbox.classList.remove('active');
