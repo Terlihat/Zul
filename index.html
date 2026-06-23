@@ -11,13 +11,12 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #1a1a1a; /* Warna latar gelap seperti di awal video */
+            background-color: #1a1a1a; 
             font-family: 'Indie Flower', cursive;
             overflow-x: hidden;
             color: white;
         }
 
-        /* Container utama */
         .container {
             width: 100%;
             max-width: 1000px;
@@ -27,7 +26,7 @@
             text-align: center;
         }
 
-        /* Latar belakang papan kuning yang muncul di video */
+        /* Latar belakang papan kuning */
         .yellow-board {
             position: absolute;
             top: 120px;
@@ -36,42 +35,65 @@
             height: 800px;
             background-color: #dcb827;
             background-image: repeating-linear-gradient(
-                rgba(0,0,0,0.05) 0px,
-                rgba(0,0,0,0.05) 2px,
+                rgba(0,0,0,0.03) 0px,
+                rgba(0,0,0,0.03) 2px,
                 transparent 2px,
                 transparent 100px
-            ); /* Memberi sedikit tekstur kayu/garis */
+            );
             z-index: -1;
             opacity: 0;
             animation: fadeIn 1s ease-in-out 1.5s forwards;
+            box-shadow: inset 0 20px 50px rgba(0,0,0,0.5); /* Menambah kedalaman */
         }
 
-        /* === GAYA TEKS & JUDUL === */
         h1.title {
             font-family: 'Caveat', cursive;
             font-size: 4rem;
             letter-spacing: 2px;
             margin: 0;
             opacity: 0;
-            /* Judul muncul pertama kali (fade in) */
             animation: fadeIn 2s ease-in-out forwards; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
 
         /* === GAYA POLAROID === */
         .polaroid {
-            background: white;
+            background: #fdfdfd;
             padding: 10px 10px 30px 10px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             display: inline-block;
             position: relative;
-            opacity: 0; /* Disembunyikan sebelum animasi dimulai */
+            opacity: 0; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Transisi mulus untuk efek hover */
+            cursor: pointer;
+        }
+
+        /* FITUR BARU: Efek Interaksi Hover */
+        .polaroid:hover {
+            transform: scale(1.15) rotate(0deg) !important; /* Membesar dan tegak lurus */
+            z-index: 50; /* Memastikan foto berada di paling atas saat disentuh */
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        }
+
+        /* FITUR BARU: Efek Selotip (Masking Tape) */
+        .tape {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-2deg);
+            width: 45px;
+            height: 25px;
+            background-color: rgba(255, 255, 230, 0.6);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            z-index: 5;
+            backdrop-filter: blur(2px); /* Memberikan efek semi-transparan realistis */
         }
 
         .polaroid img {
             display: block;
             width: 100%;
             height: auto;
-            border: 1px solid #ddd;
+            border: 1px solid #ccc;
         }
 
         .polaroid .caption {
@@ -80,19 +102,18 @@
             left: 0;
             width: 100%;
             text-align: center;
-            color: #333;
+            color: #222;
             font-weight: bold;
             font-size: 1.2rem;
         }
 
         /* === ELEMEN SPESIFIK === */
-        /* Foto Utama (Peek of The Week) */
         .main-photo {
             width: 250px;
             margin: 30px auto;
-            /* Animasi jatuh dari atas */
             animation: dropDownRotate 1s cubic-bezier(0.25, 1, 0.5, 1) 2s forwards;
             transform: rotate(-3deg);
+            z-index: 10;
         }
 
         .main-photo .caption {
@@ -103,13 +124,29 @@
         .menu-row {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 20px;
             margin-bottom: 40px;
+            position: relative; /* Penting untuk garis kawat */
+        }
+
+        /* FITUR BARU: Garis Penggantung Horizontal */
+        .hanging-wire {
+            position: absolute;
+            top: 15px; /* Menyesuaikan posisi selotip */
+            left: 10%;
+            width: 80%;
+            height: 2px;
+            background-color: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 1px 2px rgba(255,255,255,0.2);
+            z-index: 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-in-out 2.5s forwards; /* Garis muncul sebelum foto jatuh */
         }
 
         .menu-row .polaroid {
             width: 100px;
             padding: 5px 5px 25px 5px;
+            z-index: 1;
         }
 
         .menu-row .polaroid .caption {
@@ -122,7 +159,7 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
             max-width: 800px;
             margin: 0 auto;
         }
@@ -132,7 +169,7 @@
             padding: 5px 5px 20px 5px;
         }
 
-        /* === ANIMASI (KEYFRAMES) === */
+        /* === ANIMASI === */
         @keyframes fadeIn {
             0% { opacity: 0; }
             100% { opacity: 1; }
@@ -143,22 +180,23 @@
                 opacity: 0; 
                 transform: translateY(-200px) rotate(-15deg); 
             }
+            70% {
+                transform: translateY(10px) rotate(5deg); /* Efek memantul/mengayun sedikit */
+            }
             100% { 
                 opacity: 1; 
-                /* Biarkan rotasi asli dipertahankan oleh elemennya */
             }
         }
 
-        /* === PENGATURAN WAKTU JATUH (DELAY) === */
-        /* Mengatur agar menu jatuh berurutan satu per satu setelah foto utama */
-        .menu-row .polaroid:nth-child(1) { animation: dropDownRotate 0.6s ease-out 3.0s forwards; }
-        .menu-row .polaroid:nth-child(2) { animation: dropDownRotate 0.6s ease-out 3.2s forwards; }
-        .menu-row .polaroid:nth-child(3) { animation: dropDownRotate 0.6s ease-out 3.4s forwards; }
-        .menu-row .polaroid:nth-child(4) { animation: dropDownRotate 0.6s ease-out 3.6s forwards; }
-        .menu-row .polaroid:nth-child(5) { animation: dropDownRotate 0.6s ease-out 3.8s forwards; }
-        .menu-row .polaroid:nth-child(6) { animation: dropDownRotate 0.6s ease-out 4.0s forwards; }
+        /* Delay jatuh untuk baris menu */
+        .menu-row .polaroid:nth-child(2) { animation: dropDownRotate 0.6s ease-out 3.0s forwards; }
+        .menu-row .polaroid:nth-child(3) { animation: dropDownRotate 0.6s ease-out 3.2s forwards; }
+        .menu-row .polaroid:nth-child(4) { animation: dropDownRotate 0.6s ease-out 3.4s forwards; }
+        .menu-row .polaroid:nth-child(5) { animation: dropDownRotate 0.6s ease-out 3.6s forwards; }
+        .menu-row .polaroid:nth-child(6) { animation: dropDownRotate 0.6s ease-out 3.8s forwards; }
+        .menu-row .polaroid:nth-child(7) { animation: dropDownRotate 0.6s ease-out 4.0s forwards; }
 
-        /* Mengatur agar galeri bawah jatuh setelah menu selesai */
+        /* Delay jatuh untuk baris galeri */
         .gallery-row .polaroid:nth-child(1) { animation: dropDownRotate 0.5s ease-out 4.5s forwards; }
         .gallery-row .polaroid:nth-child(2) { animation: dropDownRotate 0.5s ease-out 4.6s forwards; }
         .gallery-row .polaroid:nth-child(3) { animation: dropDownRotate 0.5s ease-out 4.7s forwards; }
@@ -177,45 +215,52 @@
         <h1 class="title">Strangers In Paradise</h1>
 
         <div class="main-photo polaroid" style="transform: rotate(2deg);">
+            <div class="tape"></div>
             <img src="https://picsum.photos/300/250?random=1" alt="Peek of The Week">
             <div class="caption">Peek of The Week</div>
         </div>
 
         <div class="menu-row">
-            <div class="polaroid" style="transform: rotate(-3deg);">
+            <div class="hanging-wire"></div> <div class="polaroid" style="transform: rotate(-3deg);">
+                <div class="tape"></div>
                 <img src="https://picsum.photos/100/100?random=2" alt="Projects">
                 <div class="caption">Projects</div>
             </div>
             <div class="polaroid" style="transform: rotate(2deg);">
+                <div class="tape"></div>
                 <img src="https://picsum.photos/100/100?random=3" alt="Teachers">
                 <div class="caption">Teachers</div>
             </div>
             <div class="polaroid" style="transform: rotate(-1deg);">
+                <div class="tape"></div>
                 <img src="https://picsum.photos/100/100?random=4" alt="Students">
                 <div class="caption">Students</div>
             </div>
             <div class="polaroid" style="transform: rotate(4deg);">
+                <div class="tape"></div>
                 <img src="https://picsum.photos/100/100?random=5" alt="New Photos">
                 <div class="caption">New Photos</div>
             </div>
             <div class="polaroid" style="transform: rotate(-2deg);">
+                <div class="tape"></div>
                 <img src="https://picsum.photos/100/100?random=6" alt="Blog">
                 <div class="caption">Blog</div>
             </div>
             <div class="polaroid" style="transform: rotate(1deg);">
+                <div class="tape"></div>
                 <img src="https://picsum.photos/100/100?random=7" alt="Contact">
                 <div class="caption">Contact</div>
             </div>
         </div>
 
         <div class="gallery-row">
-            <div class="polaroid" style="transform: rotate(3deg);"><img src="https://picsum.photos/90/90?random=8" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(-2deg);"><img src="https://picsum.photos/90/90?random=9" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(1deg);"><img src="https://picsum.photos/90/90?random=10" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(-4deg);"><img src="https://picsum.photos/90/90?random=11" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(2deg);"><img src="https://picsum.photos/90/90?random=12" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(-1deg);"><img src="https://picsum.photos/90/90?random=13" alt="Gallery"></div>
-            <div class="polaroid" style="transform: rotate(3deg);"><img src="https://picsum.photos/90/90?random=14" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(3deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=8" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(-2deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=9" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(1deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=10" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(-4deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=11" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(2deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=12" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(-1deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=13" alt="Gallery"></div>
+            <div class="polaroid" style="transform: rotate(3deg);"><div class="tape"></div><img src="https://picsum.photos/90/90?random=14" alt="Gallery"></div>
         </div>
 
     </div>
